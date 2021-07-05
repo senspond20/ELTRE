@@ -4,12 +4,14 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "dev" : "electron .",
+    "dev": "concurrently \"npm run react:start\" \"npm run electron:start\"",
+    "electron:start" : "wait-on http://localhost:3000 && electron .",
+    "react:start": "react-scripts start",
     "build:osx": "electron-builder --mac",
     "build:linux": "npm run build:linux32 && npm run build:linux64",
     "build:linux32": "electron-builder --linux --ia32",
     "build:linux64": "electron-builder --linux --x64",
-    "build:win": "npm run build:win32 && npm run build:win64", 
+    "build:win": "npm run build:win32 && npm run build:win64",
     "build:win32": "electron-builder --win --ia32",
     "build:win64": "electron-builder --win --x64"
   },
@@ -17,30 +19,32 @@
     "productName": "HelloElectron",
     "appId": "com.electron.hello",
     "asar": true,
-    "protocols" : {
-        "name" : "helloElectron",
-        "schemes" : ["helloelectron"]
+    "protocols": {
+      "name": "helloElectron",
+      "schemes": [
+        "helloelectron"
+      ]
     },
-    "mac": { 
+    "mac": {
       "target": [
         "default"
       ],
       "icon": "./resources/installer/Icon.icns"
     },
-    "dmg": { 
+    "dmg": {
       "title": "HelloElectron",
       "icon": "./resources/installer/Icon.icns"
     },
-    "win": {  
-      "target": [  
-        "zip",  
-        "nsis"  
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
       ],
       "icon": "./resources/installer/Icon.ico"
     },
-    "linux": { 
+    "linux": {
       "target": [
-        "AppImage", 
+        "AppImage",
         "deb",
         "rpm",
         "zip",
@@ -48,13 +52,13 @@
       ],
       "icon": "./resources/linuxicon"
     },
-    "nsis":{
-      "oneClick" : false, 
-      "allowToChangeInstallationDirectory" :true 
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     },
     "directories": {
       "buildResources": "resources/installer/",
-      "output": "dist/", 
+      "output": "dist/",
       "app": "."
     }
   },
@@ -62,7 +66,25 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^6.2.0",
     "electron": "^13.1.2",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "react": "^17.0.2",
+    "react-do": "^1.1.6",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
+    "wait-on": "^6.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

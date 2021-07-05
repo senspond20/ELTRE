@@ -1,34 +1,29 @@
-//main.js
-const {app, BrowserWindow} = require('electron')
-const path = require('path')
+const { app, BrowserWindow } = require('electron')
+const path = require('path');
 
-let mainWindow = null
-
-function initialize() {
-  function createWindow() { //창을 생성하고, 연결되는 페이지는 index.html
-    const windowOptions = {
-      widht: 2400,
-      height: 800,
+app.whenReady().then(() => {
+  let win = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      enableRemoteModule: true,
+      preload: `${__dirname}/preload.js`
     }
-    mainWindow = new BrowserWindow(windowOptions)
-    mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
-    mainWindow.on('closed', () => {
-      mainWindow = null
-    })
+  })
+  console.log(process.env)
+  if (process.env.mode === 'dev') {
+    win.loadURL('http://localhost:3000')
+    win.webContents.openDevTools()
+  } else {
+    // win.loadURL(`file://${path.join(__dirname, '../build/index.html')}`)
+    win.loadFile(`${path.join(__dirname, '../build/index.html')}`)
   }
-  app.on('ready', () => {
-    createWindow()
-  })
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-      app.quit()
-    }
-  })
-  app.on('activate', () => {
-    if (mainWindow === null) {
-      createWindow()
-    }
-  })
-}
 
-initialize()
+  win.once('ready-to-show', () => win.show());
+  win.on('closed', () => {
+    win = null;
+  });
+})
+
+app.on('window-all-closed', () => {
+  app.quit()
+})
